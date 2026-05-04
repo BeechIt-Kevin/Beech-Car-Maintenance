@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [FormsModule, CommonModule],
   templateUrl: './maintenance-scheduler.component.html',
-  styleUrls: ['./maintenance-scheduler.component.css']
+  styleUrls: ['./maintenance-scheduler.component.scss']
 })
 export class MaintenanceSchedulerComponent {
   // Empty arrays for dropdown options, to be populated later
