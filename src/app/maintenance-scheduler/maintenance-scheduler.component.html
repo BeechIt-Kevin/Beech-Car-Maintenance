@@ -1,0 +1,75 @@
+<div class="scheduler-container">
+  <h2>Schedule a Maintenance Job</h2>
+  <p>Select the details below to schedule service and calculate costs.</p>
+
+  <form (ngSubmit)="calculateTotalPrice()" class="scheduler-form">
+    
+    <!-- Customer Selection -->
+    <div class="form-group">
+      <label for="customer">Customer:</label>
+      <select id="customer" name="customer" [(ngModel)]="selectedCustomer">
+        <option [ngValue]="null" disabled>Select a customer</option>
+        @for (customer of customers; track customer.id) {
+          <option [ngValue]="customer">{{ customer.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Car Selection -->
+    <div class="form-group">
+      <label for="car">Car:</label>
+      <select id="car" name="car" [(ngModel)]="selectedCar">
+        <option [ngValue]="null" disabled>Select a car</option>
+        @for (car of cars; track car.id) {
+          <option [ngValue]="car">{{ car.licensePlate }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Maintenance Job Selection -->
+    <div class="form-group">
+      <label for="job">Maintenance Job:</label>
+      <select id="job" name="job" [(ngModel)]="selectedJob">
+        <option [ngValue]="null" disabled>Select a maintenance job</option>
+        @for (job of maintenanceJobs; track job.id) {
+          <option [ngValue]="job">{{ job.description }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Spare Part Selection -->
+    <div class="form-group">
+      <label for="part">Required Spare Part:</label>
+      <select id="part" name="part" [(ngModel)]="selectedPart">
+        <option [ngValue]="null" disabled>Select a spare part</option>
+        @for (part of spareParts; track part.id) {
+          <option [ngValue]="part">{{ part.name }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Time Slot Selection (Crucial for Weekend vs Weekday rates) -->
+    <div class="form-group">
+      <label for="timeSlot">Time Slot:</label>
+      <select id="timeSlot" name="timeSlot" [(ngModel)]="selectedTimeSlot">
+        <option [ngValue]="null" disabled>Select a time slot</option>
+        @for (slot of timeSlots; track slot.id) {
+          <option [ngValue]="slot">{{ slot.dateTime | date:'short' }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Engineer Selection -->
+    <div class="form-group">
+      <label for="engineer">Assigned Engineer:</label>
+      <select id="engineer" name="engineer" [(ngModel)]="selectedEngineer">
+        <option [ngValue]="null" disabled>Select an engineer</option>
+        @for (engineer of engineers; track engineer.id) {
+          <option [ngValue]="engineer">{{ engineer.name }}</option>
+        }
+      </select>
+    </div>
+
+    <button type="submit" class="calculate-btn">Calculate Total Price</button>
+  </form>
+</div>
