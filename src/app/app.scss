@@ -71,3 +71,31 @@
   color: #34495e;
   font-size: 1.5rem;
 }
+
+.app-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: flex-start;
+  z-index: 1000;
+}
+
+.footer-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.footer-btn:hover {
+  background-color: #5a6268;
+}

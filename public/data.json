@@ -1,1 +1,11 @@
-[]
+{
+  "customers": [
+    {
+      "id": 1,
+      "CustomerName": "Kevin van Eijk",
+      "email": "kevin.vaneijk@beech.it",
+      "phoneNumber": "5",
+      "Cars": []
+    }
+  ]
+}

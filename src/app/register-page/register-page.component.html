@@ -1,4 +1,22 @@
 <div class="register-container">
   <h2>Register a New Item</h2>
-  <p>This is a placeholder for the registration form.</p>
+  <p>Select the type of item you want to register.</p>
+
+  <div class="options-grid">
+    <div class="option-card" (click)="navigateTo('/register-customer')">
+      <h3>Customer</h3>
+      <p>Register a new customer profile.</p>
+    </div>
+    
+    <!-- Placeholders for future entities -->
+    <div class="option-card placeholder">
+      <h3>Car</h3>
+      <p>Register a new car.</p>
+    </div>
+    
+    <div class="option-card placeholder">
+      <h3>Spare Part</h3>
+      <p>Register a new spare part.</p>
+    </div>
+  </div>
 </div>

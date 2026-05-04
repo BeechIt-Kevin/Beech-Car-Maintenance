@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { BeechCarMaintenanceDatabaseService } from './service/DatabaseService/beech-car-maintenance-database.service';
 
 @Component({
   selector: 'maintenance-app',
@@ -9,7 +10,8 @@ import { Router, RouterOutlet } from '@angular/router';
   styleUrl: './app.scss'
 })
 export class App {
-  constructor(private router: Router) {}
+  private router = inject(Router);
+  private dbService = inject(BeechCarMaintenanceDatabaseService);
 
   navigateToScheduling(): void {
     // Navigates to the core assignment functionality
@@ -18,5 +20,9 @@ export class App {
 
   navigateToRegister(): void {
     this.router.navigate(['/register']); 
+  }
+
+  downloadDatabase(): void {
+    this.dbService.downloadDbAsJson();
   }
 }
