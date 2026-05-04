@@ -21,6 +21,13 @@
   margin-bottom: 10px;
 }
 
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
 .cta-button {
   background-color: #007bff;
   color: white;
@@ -29,12 +36,19 @@
   font-size: 1.1rem;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 20px;
   transition: background-color 0.3s ease;
 }
 
 .cta-button:hover {
   background-color: #0056b3;
+}
+
+.cta-button.secondary {
+  background-color: #6c757d;
+}
+
+.cta-button.secondary:hover {
+  background-color: #5a6268;
 }
 
 .features-section {

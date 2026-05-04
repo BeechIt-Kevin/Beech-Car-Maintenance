@@ -15,4 +15,8 @@ export class App {
     // Navigates to the core assignment functionality
     this.router.navigate(['/maintenance-scheduler']); 
   }
+
+  navigateToRegister(): void {
+    this.router.navigate(['/register']); 
+  }
 }
