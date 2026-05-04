@@ -4,7 +4,28 @@
       "id": 1,
       "CustomerName": "Kevin van Eijk",
       "email": "kevin.vaneijk@beech.it",
-      "phoneNumber": "5",
+      "phoneNumber": "06 12345678",
+      "Cars": []
+    },
+    {
+      "id": 1,
+      "CustomerName": "Albert Lalaar",
+      "email": "albert.lalaar@beech.it",
+      "phoneNumber": "06 12345678",
+      "Cars": []
+    },
+    {
+      "id": 1,
+      "CustomerName": "Erwin Sonnemans",
+      "email": "erwin.sonnemans@beech.it",
+      "phoneNumber": "06 12345678",
+      "Cars": []
+    },
+    {
+      "id": 1,
+      "CustomerName": "Rinus de Bruin",
+      "email": "rinus.debruin@beech.it",
+      "phoneNumber": "06 12345678",
       "Cars": []
     }
   ]

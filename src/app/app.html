@@ -1,30 +1,21 @@
-<div class="landing-container">
-  <header class="hero-section">
-    <h1>Welcome to Beech Car Maintenance</h1>
-    <p>Professional maintenance and repair jobs for all car brands, models, and customers.</p>
-    <div class="button-group">
-      <button class="cta-button" (click)="navigateToScheduling()">
-        Calculate Maintenance Cost
-      </button>
-      <button class="cta-button secondary" (click)="navigateToRegister()">
-        Register New Item
-      </button>
-    </div>
-  </header>
+<div class="app-content">
+  <div class="landing-container">
+    <header class="hero-section">
+      <h1>Welcome to Beech Car Maintenance</h1>
+      <p>Professional maintenance and repair jobs for all car brands, models, and customers.</p>
+      <div class="button-group">
+        <button class="cta-button" (click)="navigateToScheduling()">
+          Calculate Maintenance Cost
+        </button>
+        <button class="cta-button secondary" (click)="navigateToRegister()">
+          Register New Item
+        </button>
+      </div>
+    </header>
+  </div>
 
-  <section class="features-section">
-    <div class="feature-card">
-      <h2>Comprehensive Servicing</h2>
-      <p>From generic repairs to brand-specific model maintenance, our engineers handle it all with the right spare parts.</p>
-    </div>
-    <div class="feature-card">
-      <h2>Transparent Pricing</h2>
-      <p>Calculations are based on fixed-rate service hours, weekend/weekday rates, and real-time external spare part costs.</p>
-    </div>
-  </section>
+  <router-outlet></router-outlet>
 </div>
-
-<router-outlet></router-outlet>
 
 <footer class="app-footer">
   <button class="footer-btn" (click)="downloadDatabase()">Download Database (JSON)</button>

@@ -1,15 +1,16 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed, Signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { RegisterItem } from '../../interfaces/register-item.interface';
+import { ReadItem } from '../../interfaces/read-item.interface';
 import { Customer } from '../../interfaces/customer.interface';
 import { Database } from '../../interfaces/database.interface';
 
 @Injectable({
   providedIn: 'root' // Provided at the app level
 })
-export class BeechCarMaintenanceDatabaseService implements RegisterItem {
+export class BeechCarMaintenanceDatabaseService implements RegisterItem, ReadItem {
   private http = inject(HttpClient);
   private readonly STORAGE_KEY = 'beech_car_maintenance_db';
 
@@ -32,32 +33,44 @@ export class BeechCarMaintenanceDatabaseService implements RegisterItem {
   }
 
   /**
-   * READ: Checks localStorage first. If empty, loads from a local JSON file.
+   * READ: Always reads from the local data.json file.
    */
   public read(): void {
-    const localData = localStorage.getItem(this.STORAGE_KEY);
-    
-    console.log(localData);
+    this.http.get<any>('/data.json').pipe(
+      tap(data => {
+        if (this.validateDatabase(data)) {
+          const hasDuplicates = data.customers.some((customer: Customer, index: number) => 
+            data.customers.findIndex((c: Customer) => 
+              c.CustomerName === customer.CustomerName && 
+              c.email === customer.email && 
+              c.phoneNumber === customer.phoneNumber
+            ) !== index
+          );
 
-    if (localData) {
-      try {
-        const parsed = JSON.parse(localData);
-        if (this.validateDatabase(parsed)) {
-          this.dbState.set(parsed);
-          return;
+          if (hasDuplicates) {
+            alert('Error: Duplicate customer entries found in data.json. Starting with an empty database.');
+            this.dbState.set({ customers: [] });
+            this.write({ customers: [] });
+          } else {
+            this.dbState.set(data);
+            // Sync it to localStorage just to keep write flow consistent
+            this.write(data); 
+          }
         } else {
-          alert('Error: Local storage data is corrupted or invalid. Starting with an empty database.');
+          alert('Error: data.json does not match the Database structure. Starting with an empty database.');
           this.dbState.set({ customers: [] });
           this.write({ customers: [] });
-          return;
         }
-      } catch (e) {
-        alert('Error: Could not parse local storage data. Starting with an empty database.');
-        this.dbState.set({ customers: [] });
-        this.write({ customers: [] });
-        return;
-      }
-    }
+      }),
+      catchError(error => {
+        console.error('Could not read the JSON file:', error);
+        alert('Error: Could not read data.json. Starting with an empty database.');
+        const emptyDb = { customers: [] };
+        this.dbState.set(emptyDb);
+        this.write(emptyDb);
+        return of(emptyDb);
+      })
+    ).subscribe();
   }
 
   /**
@@ -129,5 +142,13 @@ export class BeechCarMaintenanceDatabaseService implements RegisterItem {
 
     this.write(newState);
     return true; // Successfully added
+  }
+
+  /**
+   * ReadItem Implementation
+   * Returns a computed signal of the customers list.
+   */
+  public getCustomers(): Signal<Customer[]> {
+    return computed(() => this.dbState().customers || []);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Customer } from '../../interfaces/customer.interface';
@@ -15,6 +15,17 @@ export class RegisterCustomerComponent {
   private router = inject(Router);
   private dbService = inject(BeechCarMaintenanceDatabaseService);
 
+  public customers = this.dbService.getCustomers();
+  
+  public searchQuery = signal('');
+
+  public filteredCustomers = computed(() => {
+    const query = this.searchQuery().toLowerCase().trim();
+    const all = this.customers();
+    if (!query) return all;
+    return all.filter(c => c.CustomerName.toLowerCase().includes(query));
+  });
+
   customer: Partial<Customer> = {
     CustomerName: '',
     email: '',
@@ -26,7 +37,8 @@ export class RegisterCustomerComponent {
     
     if (success) {
       alert('Customer successfully registered!');
-      this.router.navigate(['/register']);
+      // Reset the form instead of navigating away so they can see the updated list
+      this.customer = { CustomerName: '', email: '', phoneNumber: '' };
     } else {
       alert('Error: A customer with this exact information already exists in the database.');
     }

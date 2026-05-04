@@ -1,3 +1,7 @@
+.app-content {
+  padding-bottom: 70px; /* Accounts for the fixed footer height */
+}
+
 .landing-container {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
@@ -51,26 +55,7 @@
   background-color: #5a6268;
 }
 
-.features-section {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-}
 
-.feature-card {
-  flex: 1;
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  border: 1px solid #eaeaea;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-  text-align: center;
-}
-
-.feature-card h2 {
-  color: #34495e;
-  font-size: 1.5rem;
-}
 
 .app-footer {
   position: fixed;
