@@ -1,7 +1,7 @@
 export interface Customer {
   id: number;
-  CustomerName: string;
+  customerName: string;
   email: string;
   phoneNumber: string;
-  Cars: number[];
+  cars: number[];
 }

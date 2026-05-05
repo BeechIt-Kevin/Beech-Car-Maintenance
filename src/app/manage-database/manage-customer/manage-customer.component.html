@@ -1,34 +1,5 @@
 <div class="page-container">
-  <!-- Left Side: Registration Form -->
-  <div class="form-container">
-    <h2>Register a New Customer</h2>
-    <p>Please enter the customer details below.</p>
-
-    <form (ngSubmit)="onSubmit()" #customerForm="ngForm" class="customer-form">
-      
-      <div class="form-group">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" [(ngModel)]="customer.CustomerName" required placeholder="Enter full name">
-      </div>
-
-      <div class="form-group">
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" [(ngModel)]="customer.email" required placeholder="Enter email address">
-      </div>
-
-      <div class="form-group">
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" [(ngModel)]="customer.phoneNumber" required placeholder="Enter phone number">
-      </div>
-
-      <div class="button-group">
-        <button type="submit" class="submit-btn" [disabled]="!customerForm.valid">Save Customer</button>
-        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
-      </div>
-    </form>
-  </div>
-
-  <!-- Right Side: Known Customers List -->
+  <!-- Left Side: Known Customers List -->
   <div class="list-container">
     <h2>Known Customers</h2>
     <div class="search-container">
@@ -50,7 +21,7 @@
       <ul class="customer-list">
         @for (c of filteredCustomers(); track c.id) {
           <li class="customer-item">
-            <strong>{{ c.CustomerName }}</strong>
+            <strong>{{ c.customerName }}</strong>
             <div class="customer-details">
               <span>✉️ {{ c.email }}</span>
               <span>📞 {{ c.phoneNumber }}</span>
@@ -59,5 +30,34 @@
         }
       </ul>
     }
+  </div>
+
+  <!-- Right Side: Registration Form -->
+  <div class="form-container">
+    <h2>Register a New Customer</h2>
+    <p>Please enter the customer details below.</p>
+
+    <form (ngSubmit)="onSubmit()" #customerForm="ngForm" class="customer-form">
+      
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" [(ngModel)]="customer.customerName" required placeholder="Enter full name">
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" [(ngModel)]="customer.email" required placeholder="Enter email address">
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" [(ngModel)]="customer.phoneNumber" required placeholder="Enter phone number">
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="submit-btn" [disabled]="!customerForm.valid">Save Customer</button>
+        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
   </div>
 </div>

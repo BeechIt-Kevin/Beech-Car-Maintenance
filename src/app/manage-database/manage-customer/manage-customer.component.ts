@@ -23,11 +23,11 @@ export class ManageCustomerComponent {
     const query = this.searchQuery().toLowerCase().trim();
     const all = this.customers();
     if (!query) return all;
-    return all.filter(c => c.CustomerName.toLowerCase().includes(query));
+    return all.filter(c => c.customerName.toLowerCase().includes(query));
   });
 
   customer: Partial<Customer> = {
-    CustomerName: '',
+    customerName: '',
     email: '',
     phoneNumber: ''
   };
@@ -38,7 +38,7 @@ export class ManageCustomerComponent {
     if (success) {
       alert('Customer successfully registered!');
       // Reset the form instead of navigating away so they can see the updated list
-      this.customer = { CustomerName: '', email: '', phoneNumber: '' };
+      this.customer = { customerName: '', email: '', phoneNumber: '' };
     } else {
       alert('Error: A customer with this exact information already exists in the database.');
     }

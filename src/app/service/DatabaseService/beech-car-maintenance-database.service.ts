@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Customer } from '../../interfaces/customer.interface';
+import { Brand } from '../../interfaces/brand.interface';
 import { Database } from '../../interfaces/database.interface';
 import { ManageDatabase } from '../../interfaces/manage-database.interface';
 
@@ -14,7 +15,7 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
   private readonly STORAGE_KEY = 'beech_car_maintenance_db';
 
   // Angular Signal to store the database state reactively
-  public dbState = signal<Database>({ customers: [] });
+  public dbState = signal<Database>({ customers: [], brands: [] });
 
   constructor() {
     console.log('BeechCarMaintenanceDatabaseService constructor');
@@ -27,7 +28,33 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
    */
   private validateDatabase(data: any): data is Database {
     if (!data || typeof data !== 'object') return false;
+    
+    // Validate customers array
     if (!Array.isArray(data.customers)) return false;
+    const validCustomers = data.customers.every((c: any) => 
+      c && typeof c === 'object' &&
+      typeof c.id === 'number' &&
+      typeof c.customerName === 'string' &&
+      typeof c.email === 'string' &&
+      typeof c.phoneNumber === 'string' &&
+      Array.isArray(c.cars)
+    );
+    if (!validCustomers) return false;
+
+    // Validate brands array, default to empty array if missing for backwards compatibility
+    if (!Array.isArray(data.brands)) {
+      data.brands = [];
+    } else {
+      const validBrands = data.brands.every((b: any) => 
+        b && typeof b === 'object' &&
+        typeof b.id === 'number' &&
+        typeof b.brandName === 'string' &&
+        Array.isArray(b.spareParts) &&
+        Array.isArray(b.model)
+      );
+      if (!validBrands) return false;
+    }
+
     return true;
   }
 
@@ -53,7 +80,7 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
         if (this.validateDatabase(data)) {
           const hasDuplicates = data.customers.some((customer: Customer, index: number) => 
             data.customers.findIndex((c: Customer) => 
-              c.CustomerName === customer.CustomerName && 
+              c.customerName === customer.customerName && 
               c.email === customer.email && 
               c.phoneNumber === customer.phoneNumber
             ) !== index
@@ -61,8 +88,8 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
 
           if (hasDuplicates) {
             alert('Error: Duplicate customer entries found in data.json. Starting with an empty database.');
-            this.dbState.set({ customers: [] });
-            this.write({ customers: [] });
+            this.dbState.set({ customers: [], brands: [] });
+            this.write({ customers: [], brands: [] });
           } else {
             this.dbState.set(data);
             // Sync it to localStorage just to keep write flow consistent
@@ -70,14 +97,14 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
           }
         } else {
           alert('Error: data.json does not match the Database structure. Starting with an empty database.');
-          this.dbState.set({ customers: [] });
-          this.write({ customers: [] });
+          this.dbState.set({ customers: [], brands: [] });
+          this.write({ customers: [], brands: [] });
         }
       }),
       catchError(error => {
         console.error('Could not read the JSON file:', error);
         alert('Error: Could not read data.json. Starting with an empty database.');
-        const emptyDb = { customers: [] };
+        const emptyDb = { customers: [], brands: [] };
         this.dbState.set(emptyDb);
         this.write(emptyDb);
         return of(emptyDb);
@@ -135,7 +162,7 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
     
     // Check if customer already exists by comparing the information
     const exists = currentState.customers.some((c: Customer) => 
-      c.CustomerName === newCustomer.CustomerName &&
+      c.customerName === newCustomer.customerName &&
       c.email === newCustomer.email &&
       c.phoneNumber === newCustomer.phoneNumber
     );
@@ -150,10 +177,10 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
 
     const customerToAdd: Customer = {
       id: uniqueId,
-      CustomerName: newCustomer.CustomerName || '',
+      customerName: newCustomer.customerName || '',
       email: newCustomer.email || '',
       phoneNumber: newCustomer.phoneNumber || '',
-      Cars: []
+      cars: []
     };
 
     const newState: Database = {
@@ -171,5 +198,47 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
    */
   public getCustomers(): Signal<Customer[]> {
     return computed(() => this.dbState().customers || []);
+  }
+
+  /**
+   * Register Brand Implementation
+   */
+  public addBrand(newBrand: Partial<Brand>): boolean {
+    const currentState = this.dbState();
+    
+    // Check if brand already exists by comparing the name
+    const exists = currentState.brands.some((b: Brand) => 
+      b.brandName.toLowerCase() === (newBrand.brandName || '').toLowerCase()
+    );
+    
+    if (exists) {
+      return false; // Brand with same name already exists
+    }
+
+    // Generate a unique ID
+    const maxId = currentState.brands.reduce((max: number, item: Brand) => (item.id && typeof item.id === 'number' ? Math.max(max, item.id) : max), 0);
+    const uniqueId = maxId + 1;
+
+    const brandToAdd: Brand = {
+      id: uniqueId,
+      brandName: newBrand.brandName || '',
+      spareParts: [],
+      model: []
+    };
+
+    const newState: Database = {
+      ...currentState,
+      brands: [...currentState.brands, brandToAdd]
+    };
+
+    this.write(newState);
+    return true; // Successfully added
+  }
+
+  /**
+   * Read Brand Implementation
+   */
+  public getBrands(): Signal<Brand[]> {
+    return computed(() => this.dbState().brands || []);
   }
 }
