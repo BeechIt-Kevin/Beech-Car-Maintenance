@@ -6,6 +6,7 @@ import { MaintenanceSchedulerComponent } from './app/maintenance-scheduler/maint
 import { ManageCustomerComponent } from './app/manage-database/manage-customer/manage-customer.component';
 import { ManageDatabasePageComponent } from './app/manage-database/manage-database-page.component';
 import { ManageBrandComponent } from './app/manage-database/manage-brand/manage-brand.component';
+import { ManageSparePartComponent } from './app/manage-database/manage-spare-part/manage-spare-part.component';
 
 bootstrapApplication(App, {
   providers: [
@@ -13,7 +14,8 @@ bootstrapApplication(App, {
       { path: 'maintenance-scheduler', component: MaintenanceSchedulerComponent },
       { path: 'manage-customer', component: ManageCustomerComponent },
       { path: 'manage-database', component: ManageDatabasePageComponent },
-      { path: 'manage-brand', component: ManageBrandComponent }
+      { path: 'manage-brand', component: ManageBrandComponent },
+      { path: 'manage-spare-part', component: ManageSparePartComponent }
     ]),
     provideHttpClient()
   ]

@@ -4,6 +4,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { Customer } from '../../interfaces/customer.interface';
 import { Brand } from '../../interfaces/brand.interface';
+import { SparePart } from '../../interfaces/spare-part.interface';
 import { Database } from '../../interfaces/database.interface';
 import { ManageDatabase } from '../../interfaces/manage-database.interface';
 
@@ -15,7 +16,7 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
   private readonly STORAGE_KEY = 'beech_car_maintenance_db';
 
   // Angular Signal to store the database state reactively
-  public dbState = signal<Database>({ customers: [], brands: [] });
+  public dbState = signal<Database>({ customers: [], brands: [], spareParts: [] });
 
   constructor() {
     console.log('BeechCarMaintenanceDatabaseService constructor');
@@ -55,6 +56,20 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
       if (!validBrands) return false;
     }
 
+    // Validate spareParts array
+    if (!Array.isArray(data.spareParts)) {
+      data.spareParts = [];
+    } else {
+      const validParts = data.spareParts.every((p: any) => 
+        p && typeof p === 'object' &&
+        typeof p.id === 'number' &&
+        typeof p.name === 'string' &&
+        typeof p.brandId === 'number' &&
+        typeof p.price === 'number'
+      );
+      if (!validParts) return false;
+    }
+
     return true;
   }
 
@@ -88,8 +103,8 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
 
           if (hasDuplicates) {
             alert('Error: Duplicate customer entries found in data.json. Starting with an empty database.');
-            this.dbState.set({ customers: [], brands: [] });
-            this.write({ customers: [], brands: [] });
+            this.dbState.set({ customers: [], brands: [], spareParts: [] });
+            this.write({ customers: [], brands: [], spareParts: [] });
           } else {
             this.dbState.set(data);
             // Sync it to localStorage just to keep write flow consistent
@@ -97,14 +112,14 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
           }
         } else {
           alert('Error: data.json does not match the Database structure. Starting with an empty database.');
-          this.dbState.set({ customers: [], brands: [] });
-          this.write({ customers: [], brands: [] });
+          this.dbState.set({ customers: [], brands: [], spareParts: [] });
+          this.write({ customers: [], brands: [], spareParts: [] });
         }
       }),
       catchError(error => {
         console.error('Could not read the JSON file:', error);
         alert('Error: Could not read data.json. Starting with an empty database.');
-        const emptyDb = { customers: [], brands: [] };
+        const emptyDb = { customers: [], brands: [], spareParts: [] };
         this.dbState.set(emptyDb);
         this.write(emptyDb);
         return of(emptyDb);
@@ -240,5 +255,63 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
    */
   public getBrands(): Signal<Brand[]> {
     return computed(() => this.dbState().brands || []);
+  }
+
+  /**
+   * Register Spare Part Implementation
+   */
+  public addSparePart(newPart: Partial<SparePart>): boolean {
+    const currentState = this.dbState();
+    
+    if (!newPart.name || !newPart.brandId || newPart.price === undefined) {
+      return false;
+    }
+
+    // Check if spare part already exists for this brand
+    const exists = currentState.spareParts.some((p: SparePart) => 
+      p.name.toLowerCase() === newPart.name!.toLowerCase() && p.brandId === newPart.brandId
+    );
+    
+    if (exists) {
+      return false; 
+    }
+
+    // Generate unique ID
+    const maxId = currentState.spareParts.reduce((max: number, item: SparePart) => Math.max(max, item.id), 0);
+    const uniqueId = maxId + 1;
+
+    const partToAdd: SparePart = {
+      id: uniqueId,
+      name: newPart.name,
+      brandId: newPart.brandId,
+      price: newPart.price
+    };
+
+    // Update brands array to include the new part ID
+    const updatedBrands = currentState.brands.map(brand => {
+      if (brand.id === newPart.brandId) {
+        return {
+          ...brand,
+          spareParts: [...brand.spareParts, uniqueId]
+        };
+      }
+      return brand;
+    });
+
+    const newState: Database = {
+      ...currentState,
+      brands: updatedBrands,
+      spareParts: [...currentState.spareParts, partToAdd]
+    };
+
+    this.write(newState);
+    return true;
+  }
+
+  /**
+   * Read Spare Part Implementation
+   */
+  public getSpareParts(): Signal<SparePart[]> {
+    return computed(() => this.dbState().spareParts || []);
   }
 }

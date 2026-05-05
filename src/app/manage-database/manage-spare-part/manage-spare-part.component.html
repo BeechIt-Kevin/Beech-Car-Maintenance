@@ -1,0 +1,68 @@
+<div class="page-container">
+  <!-- Left Side: Known Spare Parts List -->
+  <div class="list-container">
+    <h2>Known Spare Parts</h2>
+    <div class="search-container">
+      <input 
+        type="text" 
+        placeholder="Filter by part name..." 
+        [ngModel]="searchQuery()" 
+        (ngModelChange)="searchQuery.set($event)"
+        class="search-input"
+      >
+      @if (searchQuery()) {
+        <button class="clear-search-btn" (click)="searchQuery.set('')" aria-label="Clear search">×</button>
+      }
+    </div>
+    
+    @if (filteredParts().length === 0) {
+      <div class="empty-state">No spare parts found.</div>
+    } @else {
+      <ul class="customer-list">
+        @for (p of filteredParts(); track p.id) {
+          <li class="customer-item">
+            <strong>{{ p.name }}</strong>
+            <div class="customer-details">
+              <span>Brand: {{ getBrandName(p.brandId) }}</span>
+              <span>Price: {{ p.price | currency:'EUR' }}</span>
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <!-- Right Side: Registration Form -->
+  <div class="form-container">
+    <h2>Register a New Spare Part</h2>
+    <p>Please enter the part details below.</p>
+
+    <form (ngSubmit)="onSubmit()" #partForm="ngForm" class="customer-form">
+      
+      <div class="form-group">
+        <label for="name">Part Name:</label>
+        <input type="text" id="name" name="name" [(ngModel)]="part.name" required placeholder="Enter part name">
+      </div>
+
+      <div class="form-group">
+        <label for="brand">Brand:</label>
+        <select id="brand" name="brand" [(ngModel)]="part.brandId" required>
+          <option [ngValue]="undefined" disabled>Select a brand</option>
+          @for (brand of brands(); track brand.id) {
+            <option [ngValue]="brand.id">{{ brand.brandName }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price (€):</label>
+        <input type="number" id="price" name="price" [(ngModel)]="part.price" required min="0" step="0.01" placeholder="Enter price">
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="submit-btn" [disabled]="!partForm.valid">Save Spare Part</button>
+        <button type="button" class="cancel-btn" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
