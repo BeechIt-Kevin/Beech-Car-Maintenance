@@ -32,9 +32,22 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
   }
 
   /**
-   * READ: Always reads from the local data.json file.
+   * READ: Reads from localStorage first, then falls back to the local data.json file.
    */
-  public read(): void {
+  private read(): void {
+    const savedData = localStorage.getItem(this.STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (this.validateDatabase(parsedData)) {
+          this.dbState.set(parsedData);
+          return;
+        }
+      } catch (error) {
+        console.error('Error parsing localStorage data', error);
+      }
+    }
+
     this.http.get<any>('/data.json').pipe(
       tap(data => {
         if (this.validateDatabase(data)) {
@@ -75,9 +88,18 @@ export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
   /**
    * WRITE: Updates the Signal and persists the changes to localStorage
    */
-  public write(newData: Database): void {
+  private write(newData: Database): void {
     this.dbState.set(newData);
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(newData));
+  }
+
+  /**
+   * CLEAN: Removes the database from localStorage and reloads from data.json
+   */
+  public cleanLocalStorage(): void {
+    localStorage.removeItem(this.STORAGE_KEY);
+    this.read();
+    alert('Local storage has been cleaned and database reset to initial state.');
   }
 
   /**

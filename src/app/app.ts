@@ -29,4 +29,8 @@ export class App {
   downloadDatabase(): void {
     this.dbService.downloadDbAsJson();
   }
+
+  cleanLocalStorage(): void {
+    this.dbService.cleanLocalStorage();
+  }
 }
