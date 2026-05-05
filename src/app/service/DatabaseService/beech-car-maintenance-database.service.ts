@@ -2,15 +2,14 @@ import { Injectable, inject, signal, computed, Signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
-import { RegisterItem } from '../../interfaces/register-item.interface';
-import { ReadItem } from '../../interfaces/read-item.interface';
 import { Customer } from '../../interfaces/customer.interface';
 import { Database } from '../../interfaces/database.interface';
+import { ManageDatabase } from '../../interfaces/manage-database.interface';
 
 @Injectable({
   providedIn: 'root' // Provided at the app level
 })
-export class BeechCarMaintenanceDatabaseService implements RegisterItem, ReadItem {
+export class BeechCarMaintenanceDatabaseService implements ManageDatabase {
   private http = inject(HttpClient);
   private readonly STORAGE_KEY = 'beech_car_maintenance_db';
 

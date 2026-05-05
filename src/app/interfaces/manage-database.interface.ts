@@ -1,6 +1,7 @@
 import { Signal } from '@angular/core';
 import { Customer } from './customer.interface';
 
-export interface ReadItem {
+export interface ManageDatabase {
   getCustomers(): Signal<Customer[]>;
+  addCustomerJob(customer: Partial<Customer>): boolean;
 }

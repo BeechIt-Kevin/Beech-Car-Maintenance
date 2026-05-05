@@ -15,11 +15,15 @@ export class App {
 
   navigateToScheduling(): void {
     // Navigates to the core assignment functionality
-    this.router.navigate(['/maintenance-scheduler']); 
+    this.router.navigate(['/maintenance-scheduler']);
   }
 
-  navigateToRegister(): void {
-    this.router.navigate(['/register']); 
+  navigateToManageCustomer(): void {
+    this.router.navigate(['/manage-customer']);
+  }
+
+  navigateToManageDatabase(): void {
+    this.router.navigate(['/manage-database']);
   }
 
   downloadDatabase(): void {

@@ -5,13 +5,13 @@ import { Customer } from '../../interfaces/customer.interface';
 import { BeechCarMaintenanceDatabaseService } from '../../service/DatabaseService/beech-car-maintenance-database.service';
 
 @Component({
-  selector: 'app-register-customer',
+  selector: 'app-manage-customer',
   standalone: true,
   imports: [FormsModule],
-  templateUrl: './register-customer.component.html',
-  styleUrls: ['./register-customer.component.scss']
+  templateUrl: './manage-customer.component.html',
+  styleUrls: ['./manage-customer.component.scss']
 })
-export class RegisterCustomerComponent {
+export class ManageCustomerComponent {
   private router = inject(Router);
   private dbService = inject(BeechCarMaintenanceDatabaseService);
 
@@ -45,6 +45,6 @@ export class RegisterCustomerComponent {
   }
 
   cancel(): void {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/manage-database']);
   }
 }
